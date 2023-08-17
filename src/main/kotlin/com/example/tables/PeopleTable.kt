@@ -1,9 +1,10 @@
 package com.example.tables
 
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.jetbrains.exposed.dao.id.UUIDTable
+import org.jetbrains.exposed.sql.javatime.date
 
-object People : LongIdTable() {
+object People : UUIDTable() {
     val name = varchar("name", 100)
     val nickname = varchar("nickname", 32)
-    val birthdate = varchar("birthdate", 50)
+    val birthdate = date("birthdate")
 }

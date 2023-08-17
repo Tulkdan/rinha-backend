@@ -13,11 +13,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
     fun init(config: ApplicationConfig) {
-        val url = config.property("postgres.url").getString()
+        val address = config.property("postgres.address").getString()
+        val db = config.property("postgres.database").getString()
         val user = config.property("postgres.user").getString()
         val password = config.property("postgres.password").getString()
         
-        val database = Database.connect(createHikariDataSource(url))
+        val database = Database.connect(createHikariDataSource(address, db, user, password))
         transaction(database) {
             SchemaUtils.create(
                 People,
@@ -27,15 +28,20 @@ object DatabaseFactory {
     }
     
     private fun createHikariDataSource(
-        url: String
+        address: String,
+        db: String,
+        user: String,
+        password: String
     ) = HikariDataSource(HikariConfig().apply {
-        driverClassName = "org.postgresql.Driver"
-        jdbcUrl = url
-        maximumPoolSize = 3
-        isAutoCommit = false
-        transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        validate()
-    })
+            driverClassName = "org.postgresql.Driver"
+            jdbcUrl = "jdbc:postgresql://$address/$db"
+            username = user
+            maximumPoolSize = 3
+            isAutoCommit = false
+            transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+            setPassword(password)
+            validate()
+        })
 
     suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }

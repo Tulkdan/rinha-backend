@@ -6,7 +6,8 @@ ktor:
     port: 8080
 
 postgres:
-  url: 'jdbc:postgresql://localhost:5432/rinha'
+  address: 'localhost:5432'
+  database: 'rinha'
   user: 'rinha'
   password: 'rinha'
 
