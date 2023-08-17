@@ -1,15 +1,27 @@
 package com.example.features.people
 
-import kotlinx.serialization.Contextual
+import com.example.utils.LocalDateAsStringSerializer
+import com.example.utils.UUIDAsStringSerializer
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
+import java.util.UUID
 
 @Serializable
-data class Person(
-    val id: Int,
+data class PersonResponse(
+    @Serializable(UUIDAsStringSerializer::class)
+    val id: UUID,
     val name: String,
     val nickname: String,
-    @Contextual
+    @Serializable(LocalDateAsStringSerializer::class)
+    val birthdate: LocalDate,
+    val stack: List<String>?
+)
+
+@Serializable
+data class PersonPayload(
+    val name: String,
+    val nickname: String,
+    @Serializable(LocalDateAsStringSerializer::class)
     val birthdate: LocalDate,
     val stack: List<String>?
 )
