@@ -14,6 +14,10 @@ GET http://localhost:8080/pessoas/{{id}}
 
 HTTP 200
 
-GET http://localhost:8080/contagem-pessoas
+GET http://localhost:8080/pessoas?t=este
+
+HTTP 200
+
+GET http://localhost:8080/pessoas?t=C
 
 HTTP 200
