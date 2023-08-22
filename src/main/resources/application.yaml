@@ -3,11 +3,11 @@ ktor:
     modules:
       - com.example.ApplicationKt.module
   deployment:
-    port: 8080
+    port: 80
 
 postgres:
-  address: 'localhost:5432'
-  database: 'rinha'
-  user: 'rinha'
-  password: 'rinha'
+  address: '$POSTGRES_ADDRESS:5432'
+  database: '$POSTGRES_DB'
+  user: '$POSTGRES_USER'
+  password: '$POSTGRES_PASSWORD'
 
