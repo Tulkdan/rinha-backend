@@ -24,4 +24,9 @@ data class PersonPayload(
     @Serializable(LocalDateAsStringSerializer::class)
     val birthdate: LocalDate,
     val stack: List<String>?
-)
+) {
+    init {
+        require(name.isNullOrBlank()) { "name cannot be empty" }
+        require(nickname.isNullOrBlank()) { "name cannot be empty" }
+    }
+}

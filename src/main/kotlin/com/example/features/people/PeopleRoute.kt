@@ -2,7 +2,7 @@ package com.example.features.people
 
 import com.example.tables.People
 import com.example.tables.Stacks
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.routing.routing
@@ -20,6 +20,18 @@ fun Application.configurePeopleRoute() {
     routing { 
         post("/pessoas") {
             val person = call.receive<PersonPayload>()
+
+            val usernameAlreadyExists = transaction {
+                return@transaction People.select {
+                    People.nickname eq person.nickname
+                }.firstOrNull()
+            }
+
+            if (usernameAlreadyExists == null) {
+                call.respond(HttpStatusCode.UnprocessableEntity, "username already exists")
+                return@post
+            }
+
             val personId = transaction { 
                 val newPersonId = People.insertAndGetId {
                     it[People.name] = person.name
@@ -37,7 +49,8 @@ fun Application.configurePeopleRoute() {
                 return@transaction newPersonId.value
             }
             
-            call.respond(HttpStatusCode.Created, personId.toString())
+            call.response.headers.append(HttpHeaders.Location, "/pessoas/${personId.toString()}")
+            call.respond(HttpStatusCode.Created, personId.toString(), )
         }
         get("/pessoas") {
             val searchQuery = call.parameters["t"]
